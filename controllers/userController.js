@@ -36,6 +36,32 @@ const registerUser = async (req, res, next) => {
   });
 };
 
+const loginUser = async (req, res) => {
+  const { email, password } = req.body;
+
+  const user = await User.findOne({ email });
+  const correctPassword =
+    user === null ? false : await bcrypt.compare(password, user.password);
+
+  if (!correctPassword) {
+    return res.status(401).json({
+      error: 'invalid email or password',
+    });
+  }
+
+  const token = jwt.sign({ id: user._id }, config.SECRET, {
+    expiresIn: 60 * 60 * 24 * 30,
+  });
+
+  res.status(200).send({
+    token,
+    id: user.id,
+    email: user.email,
+    isAdmin: user.isAdmin,
+  });
+};
+
 module.exports = {
   registerUser,
+  loginUser,
 };
