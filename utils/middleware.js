@@ -1,3 +1,31 @@
+const jwt = require('jsonwebtoken');
+const config = require('../utils/config');
+
+const extractToken = (req, res, next) => {
+  const auth = req.get('authorization');
+
+  if (auth.toLowerCase().startsWith('bearer')) {
+    const token = auth.substring(7);
+    req.token = token;
+  }
+
+  next();
+};
+
+const protect = (req, res, next) => {
+  const { token } = req;
+  if (!token) {
+    const err = new Error('token is missing');
+    err.status = 401;
+    return next(err);
+  }
+
+  const decodedToken = jwt.verify(token, config.SECRET);
+
+  req.user = decodedToken;
+  next();
+};
+
 const unknownResource = (req, res) => {
   res.status(404).json({
     message: 'Resource Not Found',
