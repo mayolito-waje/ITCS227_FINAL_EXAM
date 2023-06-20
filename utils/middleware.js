@@ -17,11 +17,17 @@ const errorHandler = (err, req, res, next) => {
     return res.status(401).json({
       error: 'token expired',
     });
+  } else if (err.message.includes('duplicate key error collection')) {
+    return res
+      .status(400)
+      .json({ error: 'email should be unique (email is already taken)' });
   }
 
-  console.error(err);
+  const status = err.status === 200 ? 500 : err.status;
 
-  next(err);
+  res.status(status).json({
+    error: err.message,
+  });
 };
 
 module.exports = {
