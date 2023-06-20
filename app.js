@@ -3,7 +3,11 @@ const mongoose = require('mongoose'); // MongoDB Object Document Mapper
 const cors = require('cors');
 const helmet = require('helmet');
 const config = require('./utils/config');
-const { unknownResource, errorHandler } = require('./utils/middleware');
+const {
+  unknownResource,
+  errorHandler,
+  extractToken,
+} = require('./utils/middleware');
 const userRouter = require('./routers/userRouter');
 require('express-async-errors');
 
@@ -21,6 +25,7 @@ mongoose
 app.use(cors());
 app.use(helmet());
 app.use(express.json());
+app.use(extractToken);
 
 app.use('/users', userRouter);
 
