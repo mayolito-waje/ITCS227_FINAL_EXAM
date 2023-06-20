@@ -3,14 +3,14 @@ const Order = require('../models/orderModel');
 const Product = require('../models/productModel');
 
 const retrieveOrders = async (req, res, next) => {
-  if (!req.user.isAdmin) {
-    const err = new Error('you must be an admin to retrieve all orders');
-    err.status = 401;
-    return next(err);
-  }
+  const orders = req.user.isAdmin
+    ? await Order.find({})
+    : await Order.aggregate([
+        { $match: { userId: new mongoose.Types.ObjectId(req.user.id) } },
+        { $project: { userId: 0 } },
+      ]);
 
-  const orders = await Order.find({}).populate('userId').populate('products');
-  res.json(orders);
+  res.json(await Order.populate(orders, { path: 'userId products' }));
 };
 
 const createOrder = async (req, res, next) => {
