@@ -41,7 +41,14 @@ const retrieveActiveProducts = async (req, res) => {
   res.json(activeProducts);
 };
 
+const retrieveSingleProduct = async (req, res) => {
+  const { id } = req.params;
+  const targetProduct = await Product.findById(id);
+  res.json(targetProduct);
+};
+
 module.exports = {
   createProducts,
   retrieveActiveProducts,
+  retrieveSingleProduct,
 };
