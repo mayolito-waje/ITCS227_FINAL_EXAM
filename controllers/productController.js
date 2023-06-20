@@ -47,8 +47,62 @@ const retrieveSingleProduct = async (req, res) => {
   res.json(targetProduct);
 };
 
+const updateProduct = async (req, res, next) => {
+  if (!req.user.isAdmin) {
+    const err = new Error('non-admin not authorized to update the product');
+    err.status = 401;
+    return next(err);
+  }
+
+  const { id } = req.params;
+  const { name, description, price } = req.body;
+
+  try {
+    const updatedProduct = await Product.findByIdAndUpdate(
+      id,
+      {
+        name,
+        description,
+        price,
+      },
+      { returnDocument: 'after' }
+    );
+
+    res.json(updatedProduct);
+  } catch (error) {
+    next(error);
+  }
+};
+
+const archiveProduct = async (req, res, next) => {
+  if (!req.user.isAdmin) {
+    const err = Error('cannot archive product if not an admin');
+    err.status = 401;
+    return next(err);
+  }
+
+  const { id } = req.params;
+
+  try {
+    const archivedProduct = await Product.findByIdAndUpdate(
+      id,
+      { isActive: false },
+      { returnDocument: 'after' }
+    );
+
+    res.json({
+      message: 'successfully archived',
+      archived: archivedProduct,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   createProducts,
   retrieveActiveProducts,
   retrieveSingleProduct,
+  updateProduct,
+  archiveProduct,
 };
