@@ -45,7 +45,30 @@ const createOrder = async (req, res, next) => {
   }
 };
 
+const deleteOrder = async (req, res, next) => {
+  const userId = req.user.id;
+  const orderId = req.params.id;
+
+  try {
+    const orderToDelete = await Order.findById(orderId);
+
+    if (orderToDelete.userId.toString() === userId) {
+      await orderToDelete.deleteOne();
+      res.json({
+        message: 'successfully deleted',
+      });
+    } else {
+      res.status(401).json({
+        message: 'you have no permission to delete this order',
+      });
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   retrieveOrders,
   createOrder,
+  deleteOrder,
 };
