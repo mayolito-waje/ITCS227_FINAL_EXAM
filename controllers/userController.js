@@ -24,9 +24,13 @@ const registerUser = async (req, res, next) => {
 
   const savedUser = await user.save();
 
-  const token = jwt.sign({ id: user._id }, config.SECRET, {
-    expiresIn: 60 * 60 * 24 * 30,
-  });
+  const token = jwt.sign(
+    { id: user._id, isAdmin: user.isAdmin },
+    config.SECRET,
+    {
+      expiresIn: 60 * 60 * 24 * 30,
+    }
+  );
 
   res.status(201).json({
     token,
@@ -49,9 +53,13 @@ const loginUser = async (req, res) => {
     });
   }
 
-  const token = jwt.sign({ id: user._id }, config.SECRET, {
-    expiresIn: 60 * 60 * 24 * 30,
-  });
+  const token = jwt.sign(
+    { id: user._id, isAdmin: user.isAdmin },
+    config.SECRET,
+    {
+      expiresIn: 60 * 60 * 24 * 30,
+    }
+  );
 
   res.status(200).send({
     token,

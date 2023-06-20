@@ -9,6 +9,7 @@ const {
   extractToken,
 } = require('./utils/middleware');
 const userRouter = require('./routers/userRouter');
+const productRouter = require('./routers/productRouter');
 require('express-async-errors');
 
 const app = express();
@@ -28,6 +29,7 @@ app.use(express.json());
 app.use(extractToken);
 
 app.use('/users', userRouter);
+app.use('/products', productRouter);
 
 app.get('/', (req, res) => {
   res.send('API is running');
