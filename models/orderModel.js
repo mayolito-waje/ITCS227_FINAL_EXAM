@@ -5,8 +5,8 @@ const orderSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
   },
-  products: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Product' }],
   totalAmount: Number,
+  products: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Product' }],
   purchasedOn: {
     type: Date,
     default: Date.now(),

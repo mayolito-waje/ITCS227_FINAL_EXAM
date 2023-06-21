@@ -39,7 +39,9 @@ const createOrder = async (req, res, next) => {
     });
 
     await order.save();
-    res.status(201).json(order);
+    const createdOrder = await Order.populate(order, { path: 'products' });
+
+    res.status(201).json(createdOrder);
   } catch (error) {
     next(error);
   }
