@@ -13,6 +13,24 @@ const retrieveOrders = async (req, res, next) => {
   res.json(await Order.populate(orders, { path: 'userId products' }));
 };
 
+const retrieveSingleOrder = async (req, res, next) => {
+  const orderId = req.params.id;
+  const userId = req.user.id;
+
+  const order = await Order.findById(orderId)
+    .populate('products')
+    .populate('userId');
+  if (!order) return next();
+
+  if (req.user.isAdmin || order.userId._id.toString() === userId) {
+    res.json(order);
+  } else {
+    res.status(401).json({
+      message: 'you cannot view this order',
+    });
+  }
+};
+
 const createOrder = async (req, res, next) => {
   if (req.user.isAdmin) {
     const err = new Error('only non-admins can create orders');
@@ -76,6 +94,7 @@ const deleteOrder = async (req, res, next) => {
 
 module.exports = {
   retrieveOrders,
+  retrieveSingleOrder,
   createOrder,
   deleteOrder,
 };
