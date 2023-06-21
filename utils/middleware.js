@@ -13,7 +13,6 @@ const extractToken = (req, res, next) => {
 };
 
 const protect = (req, res, next) => {
-  console.log('token is being scanned');
   const { token } = req;
   if (!token) {
     const err = new Error('token is missing');
@@ -53,7 +52,6 @@ const errorHandler = (err, req, res, next) => {
   }
 
   const status = err.status ?? 500;
-  console.log('status: ', status);
 
   res.status(status).json({
     error: err.message,

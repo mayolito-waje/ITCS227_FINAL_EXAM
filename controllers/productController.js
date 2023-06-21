@@ -58,6 +58,14 @@ const updateProduct = async (req, res, next) => {
   const { name, description, price } = req.body;
 
   try {
+    const oldProduct = await Product.findById(id);
+
+    if (!oldProduct.isActive) {
+      const err = new Error('product is already archived');
+      err.status = 401;
+      return next(err);
+    }
+
     const updatedProduct = await Product.findByIdAndUpdate(
       id,
       {
@@ -68,7 +76,11 @@ const updateProduct = async (req, res, next) => {
       { returnDocument: 'after' }
     );
 
-    res.json(updatedProduct);
+    res.json({
+      message: 'successfully updated',
+      oldProduct,
+      updatedProduct,
+    });
   } catch (error) {
     next(error);
   }
