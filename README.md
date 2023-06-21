@@ -18,8 +18,8 @@ My E-Commerce API for my final exam. It uses modern practices to ensure that the
 | `POST /products`            | Create new product.                                                                                                   |
 | `GET /products`             | Retrieve all active products (`product.isActive == true`).                                                            |
 | `GET /products/:id`         | Retrieve product by id.                                                                                               |
-| `PUT /products/:id`         | Update product by id. Only active products can be updated.                                                            |
-| `PUT /products/:id/archive` | Archive a product (deactivate).                                                                                       |
+| `PUT /products/:id`         | Update product by id. Only active products can be updated. Only admins can update a product.                          |
+| `PUT /products/:id/archive` | Archive a product (deactivate). Only admins can archive a product.                                                    |
 | `POST /users/orders`        | Create new order (only for NON-admins).                                                                               |
 | `GET /users/orders`         | Retrieve orders. If admin, retrieve all orders on database. If non-admin, retrieve only orders made by the non-admin. |
 | `GET /users/orders/:id`     | Retrieve order by id. Only return the order if requested by the one who created the order or if the user is an admin. |
