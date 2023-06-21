@@ -4,7 +4,7 @@ const config = require('../utils/config');
 const extractToken = (req, res, next) => {
   const auth = req.get('authorization');
 
-  if (auth.toLowerCase().startsWith('bearer')) {
+  if (auth && auth.toLowerCase().startsWith('bearer')) {
     const token = auth.substring(7);
     req.token = token;
   }
@@ -13,6 +13,7 @@ const extractToken = (req, res, next) => {
 };
 
 const protect = (req, res, next) => {
+  console.log('token is being scanned');
   const { token } = req;
   if (!token) {
     const err = new Error('token is missing');
@@ -51,7 +52,8 @@ const errorHandler = (err, req, res, next) => {
       .json({ error: 'email should be unique (email is already taken)' });
   }
 
-  const status = err.status === 200 ? 500 : err.status;
+  const status = err.status ?? 500;
+  console.log('status: ', status);
 
   res.status(status).json({
     error: err.message,

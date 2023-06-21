@@ -1,4 +1,5 @@
 const express = require('express');
+require('express-async-errors');
 const mongoose = require('mongoose'); // MongoDB Object Document Mapper
 const cors = require('cors');
 const helmet = require('helmet');
@@ -10,7 +11,6 @@ const {
 } = require('./utils/middleware');
 const userRouter = require('./routers/userRouter');
 const productRouter = require('./routers/productRouter');
-require('express-async-errors');
 
 const app = express();
 
