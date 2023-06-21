@@ -41,9 +41,10 @@ const retrieveActiveProducts = async (req, res) => {
   res.json(activeProducts);
 };
 
-const retrieveSingleProduct = async (req, res) => {
+const retrieveSingleProduct = async (req, res, next) => {
   const { id } = req.params;
   const targetProduct = await Product.findById(id);
+  if (!targetProduct) return next();
   res.json(targetProduct);
 };
 

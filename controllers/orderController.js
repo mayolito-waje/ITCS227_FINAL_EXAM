@@ -7,7 +7,7 @@ const retrieveOrders = async (req, res, next) => {
     ? await Order.find({})
     : await Order.aggregate([
         { $match: { userId: new mongoose.Types.ObjectId(req.user.id) } },
-        { $project: { userId: 0 } },
+        { $project: { userId: 0, _id: 0, __v: 0 } },
       ]);
 
   res.json(await Order.populate(orders, { path: 'userId products' }));
@@ -53,6 +53,11 @@ const deleteOrder = async (req, res, next) => {
 
   try {
     const orderToDelete = await Order.findById(orderId);
+    if (!orderToDelete) {
+      const err = new Error("order doesn't exist");
+      err.status = 400;
+      return next(err);
+    }
 
     if (orderToDelete.userId.toString() === userId) {
       await orderToDelete.deleteOne();
